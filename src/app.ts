@@ -4,6 +4,8 @@ import cors from 'cors';
 import xss from 'xss-clean';
 import mongoSanitize from 'express-mongo-sanitize';
 import compression from 'compression';
+import morgan from 'morgan';
+import logger, { stream } from './utils/logger';
 
 class App {
   public app: express.Application;
@@ -19,7 +21,7 @@ class App {
 
   public listen() {
     this.app.listen(this.port, () => {
-      console.log(`server listening on port :: ${this.port}`);
+      logger.info(`server listening on port :: ${this.port}`);
     });
   }
 
@@ -28,7 +30,7 @@ class App {
   }
 
   private connectDatabase() {
-    console.log('connecting to database ...');
+    logger.info('connecting to database ...');
   }
 
   private initializeMiddlewares() {
@@ -37,7 +39,8 @@ class App {
     this.app.use(xss());
     this.app.use(mongoSanitize());
     this.app.use(compression());
-    this.app.use(express.urlencoded({ limit: '', extended: true }));
+    this.app.use(express.urlencoded({ limit: '50mb', extended: true }));
+    this.app.use(morgan('combined', { stream }));
   }
 }
 
