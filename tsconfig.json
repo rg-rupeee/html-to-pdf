@@ -22,11 +22,13 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "incremental": true,
-    "skipLibCheck": true
-  },
-  "paths": {
-    "*": ["node_modules/*", "src/types/*"],
-    "@/*": ["*"]
+    "skipLibCheck": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"],
+      "@config/*": ["config/*"],
+      "@utils/*": ["utils/*"]
+    }
   },
   "include": ["src/**/*"]
 }

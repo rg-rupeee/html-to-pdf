@@ -5,8 +5,9 @@ import xss from 'xss-clean';
 import mongoSanitize from 'express-mongo-sanitize';
 import compression from 'compression';
 import morgan from 'morgan';
-import logger, { stream } from './utils/logger';
-import Config from './config/environment';
+
+import logger, { stream } from '@utils/logger';
+import Config from '@config/environment';
 
 class App {
   public app: express.Application;

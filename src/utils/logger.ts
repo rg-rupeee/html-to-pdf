@@ -1,4 +1,4 @@
-const winston = require('winston');
+import winston from 'winston';
 
 const levels = {
   error: 0,
@@ -30,7 +30,7 @@ const format = winston.format.combine(
   winston.format.printf((info: { timestamp: any; level: any; message: any; }) => `${info.timestamp} ${info.level}: ${info.message}`),
 );
 
-const transports = [new winston.transports.Console({ handleException: true })];
+const transports = [new winston.transports.Console()];
 
 const logger = winston.createLogger({
   level: level(),
