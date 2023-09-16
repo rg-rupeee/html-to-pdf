@@ -10,19 +10,23 @@ class Environment {
 }
 
 class Config {
-  public envVars: { [key: string]: string | number } = {};
+  public static envVars: { [key: string]: string | undefined } = {};
 
-  constructor() {
+  static {
     this.envVars.NODE_ENV = process.env.NODE_ENV;
     this.envVars.PORT = process.env.PORT;
   }
 
-  public async validate() {
-    const result = await validationPipe(Environment, this.envVars);
+  public static async validate() {
+    const result = await validationPipe(Environment, Config.envVars);
     if (result !== true) {
       logger.error(result);
       throw new Error('Error While configuring environment variables');
     }
+  }
+
+  public async getEnvVar(name: string) {
+    return Config.envVars[name];
   }
 }
 

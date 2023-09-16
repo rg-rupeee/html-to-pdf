@@ -14,7 +14,7 @@ class App {
 
   constructor() {
     this.app = express();
-    this.port = process.env.PORT || 3000;
+    this.port = Config.envVars.PORT || 3000;
 
     this.validateEnvironmentConfig();
     this.connectDatabase();
@@ -33,8 +33,7 @@ class App {
 
   private async validateEnvironmentConfig() {
     logger.info('validating environment configuration');
-    const config = new Config();
-    await config.validate();
+    await Config.validate();
   }
 
   private connectDatabase() {
