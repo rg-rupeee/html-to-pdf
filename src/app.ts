@@ -6,6 +6,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import compression from 'compression';
 import morgan from 'morgan';
 import logger, { stream } from './utils/logger';
+import Config from './config/environment';
 
 class App {
   public app: express.Application;
@@ -15,6 +16,7 @@ class App {
     this.app = express();
     this.port = process.env.PORT || 3000;
 
+    this.validateEnvironmentConfig();
     this.connectDatabase();
     this.initializeMiddlewares();
   }
@@ -27,6 +29,12 @@ class App {
 
   public getServer() {
     return this.app;
+  }
+
+  private async validateEnvironmentConfig() {
+    logger.info('validating environment configuration');
+    const config = new Config();
+    await config.validate();
   }
 
   private connectDatabase() {

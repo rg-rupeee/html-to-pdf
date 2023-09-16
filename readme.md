@@ -7,3 +7,4 @@ TODO
 6. constants
 7. nodemon
 8. eslint
+9. errors and global error handling middleware
