@@ -14,7 +14,7 @@ class App {
 
   constructor() {
     this.app = express();
-    this.port = Config.envVars.PORT || 3000;
+    this.port = Config.getEnvVar('PORT') || 3000;
 
     this.validateEnvironmentConfig();
     this.connectDatabase();

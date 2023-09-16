@@ -10,7 +10,7 @@ class Environment {
 }
 
 class Config {
-  public static envVars: { [key: string]: string | undefined } = {};
+  private static envVars: { [key: string]: string | undefined } = {};
 
   static {
     this.envVars.NODE_ENV = process.env.NODE_ENV;
@@ -25,7 +25,7 @@ class Config {
     }
   }
 
-  public async getEnvVar(name: string) {
+  public static getEnvVar(name: string) {
     return Config.envVars[name];
   }
 }
