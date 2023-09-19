@@ -7,18 +7,40 @@ class Environment {
 
   @IsString()
   PORT: string;
+
+  @IsString()
+  MYSQL_HOST: string;
+
+  @IsString()
+  MYSQL_PORT: string;
+
+  @IsString()
+  MYSQL_USERNAME: string;
+
+  @IsString()
+  MYSQL_PASSWORD: string;
+
+  @IsString()
+  MYSQL_DATABASE: string;
 }
 
 class Config {
-  private static envVars: { [key: string]: string | undefined } = {};
+  public static envVars: any = {};
 
   static {
     this.envVars.NODE_ENV = process.env.NODE_ENV;
     this.envVars.PORT = process.env.PORT;
+    this.envVars.MYSQL = {
+      HOST: process.env.MYSQL_HOST,
+      PORT: process.env.MYSQL_PORT,
+      USERNAME: process.env.MYSQL_USERNAME,
+      PASSWORD: process.env.MYSQL_PASSWORD,
+      DATABASE: process.env.MYSQL_DATABASE,
+    };
   }
 
   public static async validate() {
-    const result = await validationPipe(Environment, Config.envVars);
+    const result = await validationPipe(Environment, process.env);
     if (result !== true) {
       logger.error(result);
       throw new Error('Error While configuring environment variables');

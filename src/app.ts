@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -8,6 +9,7 @@ import morgan from 'morgan';
 
 import logger, { stream } from '@utils/logger';
 import Config from '@config/environment';
+import { connectDatabases } from './databases';
 
 class App {
   public app: express.Application;
@@ -15,11 +17,9 @@ class App {
 
   constructor() {
     this.app = express();
-    this.port = Config.getEnvVar('PORT') || 3000;
+    this.port = Config.envVars.PORT;
 
-    this.validateEnvironmentConfig();
-    this.connectDatabase();
-    this.initializeMiddlewares();
+    this.initializeApp();
   }
 
   public listen() {
@@ -32,13 +32,20 @@ class App {
     return this.app;
   }
 
+  private async initializeApp() {
+    await this.validateEnvironmentConfig();
+    await this.connectDatabases();
+    this.initializeMiddlewares();
+  }
+
   private async validateEnvironmentConfig() {
     logger.info('validating environment configuration');
     await Config.validate();
   }
 
-  private connectDatabase() {
-    logger.info('connecting to database ...');
+  private async connectDatabases() {
+    logger.info('connecting to databases ...');
+    await connectDatabases();
   }
 
   private initializeMiddlewares() {
