@@ -27,7 +27,8 @@
     "paths": {
       "@/*": ["*"],
       "@config/*": ["config/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@middlewares/*": ["middlewares/*"]
     }
   },
   "include": ["src/**/*"]
