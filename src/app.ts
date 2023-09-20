@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import xss from 'xss-clean';
@@ -12,6 +12,7 @@ import logger, { stream } from '@utils/logger';
 import Config from '@config/environment';
 import { connectDatabases } from './databases';
 import errorHandler from '@middlewares/error.middleware';
+import AppError from '@utils/error';
 
 class App {
   public app: express.Application;
@@ -52,7 +53,7 @@ class App {
     await this.validateEnvironmentConfig();
     await this.connectDatabases();
     this.initializeMiddlewares();
-    this.registerErrorHandler();
+    this.registerRoutes();
   }
 
   private async validateEnvironmentConfig() {
@@ -72,10 +73,15 @@ class App {
     this.app.use(mongoSanitize());
     this.app.use(compression());
     this.app.use(express.urlencoded({ limit: '50mb', extended: true }));
-    this.app.use(morgan('combined', { stream }));
+    this.app.use(morgan(Config.envVars.MORGAN_LOG_LEVEL, { stream }));
   }
 
-  private registerErrorHandler() {
+  private registerRoutes() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    this.app.all('*', (req: Request, _res: Response, next: NextFunction) => {
+      return next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+    });
+
     this.app.use(errorHandler);
   }
 }

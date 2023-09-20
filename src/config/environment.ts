@@ -22,6 +22,12 @@ class Environment {
 
   @IsString()
   MYSQL_DATABASE: string;
+
+  @IsString()
+  LOG_LEVEL: string;
+
+  @IsString()
+  MORGAN_LOG_LEVEL: string;
 }
 
 class Config {
@@ -30,6 +36,8 @@ class Config {
   static {
     this.envVars.NODE_ENV = process.env.NODE_ENV;
     this.envVars.PORT = process.env.PORT;
+    this.envVars.LOG_LEVEL = process.env.LOG_LEVEL;
+    this.envVars.MORGAN_LOG_LEVEL = process.env.MORGAN_LOG_LEVEL;
     this.envVars.MYSQL = {
       HOST: process.env.MYSQL_HOST,
       PORT: process.env.MYSQL_PORT,
