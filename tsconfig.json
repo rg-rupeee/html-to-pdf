@@ -28,7 +28,9 @@
       "@/*": ["*"],
       "@config/*": ["config/*"],
       "@utils/*": ["utils/*"],
-      "@middlewares/*": ["middlewares/*"]
+      "@middlewares/*": ["middlewares/*"],
+      "@interfaces/*": ["interfaces/*"],
+      "@api/*": ["api/*"]
     }
   },
   "include": ["src/**/*"]

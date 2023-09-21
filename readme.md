@@ -8,3 +8,4 @@ TODO
 7. nodemon
 8. eslint
 9. errors and global error handling middleware
+10. health check route

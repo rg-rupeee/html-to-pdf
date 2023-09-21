@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import xss from 'xss-clean';
@@ -12,7 +12,7 @@ import logger, { stream } from '@utils/logger';
 import Config from '@config/environment';
 import { connectDatabases } from './databases';
 import errorHandler from '@middlewares/error.middleware';
-import AppError from '@utils/error';
+import apiRoutes from '@api/index';
 
 class App {
   public app: express.Application;
@@ -77,9 +77,14 @@ class App {
   }
 
   private registerRoutes() {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.app.all('*', (req: Request, _res: Response, next: NextFunction) => {
-      return next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+    this.app.use('/api', apiRoutes);
+
+    this.app.all('*', (req: Request, res: Response) => {
+      return res.status(404).json({
+        success: false,
+        status: 'fail',
+        message: `Cannot find ${req.originalUrl} on this server!`,
+      });
     });
 
     this.app.use(errorHandler);
