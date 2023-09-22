@@ -12,7 +12,8 @@ import logger, { stream } from '@utils/logger';
 import Config from '@config/environment';
 import { connectDatabases } from './databases';
 import errorHandler from '@middlewares/error.middleware';
-import apiRoutes from '@api/index';
+import routes from '@modules/index';
+import { Routes } from './interfaces/routes.interface';
 
 class App {
   public app: express.Application;
@@ -22,18 +23,29 @@ class App {
   constructor() {
     this.app = express();
     this.port = Config.envVars.PORT;
-
-    this.initializeApp();
   }
 
   public listen() {
     this.server = this.app.listen(this.port, () => {
-      logger.info(`server listening on port :: ${this.port}`);
+      logger.info(`Server listening on port :: ${this.port}`);
     });
     return this.server;
   }
 
-  public registerProcessEventHandlers() {
+  public async initializeApp() {
+    await this.validateEnvironmentConfig();
+    this.initializeMiddlewares();
+    this.registerRoutes();
+    await this.connectDatabases();
+    this.registerProcessEventHandlers();
+  }
+
+  private async connectDatabases() {
+    logger.info('connecting to databases ...');
+    await connectDatabases();
+  }
+
+  private registerProcessEventHandlers() {
     process.on('SIGTERM', () => {
       logger.error('SIGTERM RECEIVED. Shutting down gracefully');
       this.server.close(() => {
@@ -49,21 +61,9 @@ class App {
     });
   }
 
-  private async initializeApp() {
-    await this.validateEnvironmentConfig();
-    await this.connectDatabases();
-    this.initializeMiddlewares();
-    this.registerRoutes();
-  }
-
   private async validateEnvironmentConfig() {
     logger.info('validating environment configuration');
     await Config.validate();
-  }
-
-  private async connectDatabases() {
-    logger.info('connecting to databases ...');
-    await connectDatabases();
   }
 
   private initializeMiddlewares() {
@@ -77,7 +77,10 @@ class App {
   }
 
   private registerRoutes() {
-    this.app.use('/api', apiRoutes);
+    routes.forEach((route: Routes) => {
+      logger.debug(`API Loaded: ${route.path}`);
+      this.app.use(`/api/${route.version}/${route.path}`, route.router);
+    });
 
     this.app.all('*', (req: Request, res: Response) => {
       return res.status(404).json({

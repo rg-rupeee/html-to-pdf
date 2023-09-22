@@ -12,6 +12,12 @@ process.on('unhandledRejection', err => {
   logger.debug(err);
 });
 
-const app = new App();
-app.listen();
-app.registerProcessEventHandlers();
+const bootstrap = async () => {
+  const app = new App();
+
+  await app.initializeApp();
+
+  app.listen();
+};
+
+bootstrap();
