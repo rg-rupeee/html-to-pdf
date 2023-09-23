@@ -2,6 +2,7 @@
   "cSpell.words": [
     "healthcheck",
     "htmltopdf",
-    "typeorm"
+    "typeorm",
+    "wkhtmltopdf"
   ]
 }

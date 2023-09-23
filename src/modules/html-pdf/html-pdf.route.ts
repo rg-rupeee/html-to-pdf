@@ -2,6 +2,8 @@ import { Router } from 'express';
 
 import { Routes } from '@interfaces/routes.interface';
 import HtmlToPdfController from './html-pdf.controller';
+import validationMiddleware from '@/middlewares/validation.middleware';
+import { urlToPdfDTO } from './html-pdf.dto';
 
 class HealthCheckRoute implements Routes {
   public path = 'html-pdf';
@@ -15,7 +17,15 @@ class HealthCheckRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.post('/', this.controller.createPdf);
+    this.router.post(
+      '/wkhtmltopdf/url',
+      validationMiddleware(urlToPdfDTO, 'body'),
+      this.controller.createPdfFromUrl,
+    );
+
+    this.router.post('/wkhtmltopdf/file', this.controller.createPdfFromUrl);
+
+    this.router.post('/wkhtmltopdf/data', this.controller.createPdfFromUrl);
   }
 }
 

@@ -7,6 +7,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import compression from 'compression';
 import morgan from 'morgan';
 import http from 'http';
+import hpp from 'hpp';
 
 import logger, { stream } from '@utils/logger';
 import Config from '@config/environment';
@@ -70,8 +71,10 @@ class App {
     this.app.use(helmet());
     this.app.use(cors());
     this.app.use(xss());
+    this.app.use(hpp());
     this.app.use(mongoSanitize());
     this.app.use(compression());
+    this.app.use(express.json());
     this.app.use(express.urlencoded({ limit: '50mb', extended: true }));
     this.app.use(morgan(Config.envVars.MORGAN_LOG_LEVEL, { stream }));
   }
