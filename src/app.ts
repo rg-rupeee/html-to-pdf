@@ -1,20 +1,23 @@
 import 'reflect-metadata';
-import express, { Request, Response } from 'express';
-import helmet from 'helmet';
-import cors from 'cors';
-import xss from 'xss-clean';
-import mongoSanitize from 'express-mongo-sanitize';
-import compression from 'compression';
-import morgan from 'morgan';
-import http from 'http';
 import hpp from 'hpp';
+import cors from 'cors';
+import http from 'http';
+import YAML from 'yamljs';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import xss from 'xss-clean';
+import swaggerUi from 'swagger-ui-express';
+import compression from 'compression';
+import mongoSanitize from 'express-mongo-sanitize';
+import express, { Request, Response } from 'express';
 
-import logger, { stream } from '@utils/logger';
-import Config from '@/config/Environment';
-import { connectDatabases } from './databases';
-import errorHandler from '@middlewares/error.middleware';
 import routes from '@modules/index';
+import Config from '@/config/Environment';
+import logger, { stream } from '@utils/logger';
+import { connectDatabases } from './databases';
 import { Routes } from './interfaces/routes.interface';
+import errorHandler from '@middlewares/error.middleware';
+import { resolve } from 'path';
 
 class App {
   public app: express.Application;
@@ -80,6 +83,11 @@ class App {
   }
 
   private registerRoutes() {
+    const swaggerDocument = YAML.load(
+      resolve(`${__dirname}/docs/html-pdf.yaml`),
+    );
+    this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
     routes.forEach((route: Routes) => {
       logger.debug(`API Loaded: ${route.path}`);
       this.app.use(`/api/${route.version}/${route.path}`, route.router);

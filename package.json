@@ -4,14 +4,14 @@
   "description": "A utility microservice module",
   "main": "src/index.ts",
   "scripts": {
-    "build": "npx tsc && tsc-alias",
+    "build": "yarn copy-assets && npx tsc && tsc-alias",
     "serve": "node dist/server.js",
     "start": "yarn build && yarn serve",
     "start:local": "yarn build && yarn serve:local",
     "serve:local": "env-cmd -f .env.local yarn serve",
     "format": "eslint . --fix",
     "clean-dist": "npx ts-node scripts/removeDist.ts",
-    "copy-assets": "npx ts-node scripts/copyStaticAssets.ts"
+    "copy-assets": "npx ts-node scripts/copyAssets.ts"
   },
   "author": "Rupesh Garhwal <rupeshgarhwal3920@gmail.com>",
   "license": "ISC",
@@ -31,12 +31,14 @@
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.6.1",
     "reflect-metadata": "^0.1.13",
+    "swagger-ui-express": "^5.0.0",
     "tslib": "^2.6.2",
     "typeorm": "^0.3.17",
     "typescript": "^5.2.2",
     "winston": "^3.10.0",
     "wkhtmltopdf": "^0.4.0",
-    "xss-clean": "^0.1.4"
+    "xss-clean": "^0.1.4",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

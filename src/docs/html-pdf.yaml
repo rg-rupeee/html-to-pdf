@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+  title: HTML to PDF Converter API
+  description: An API to convert HTML to PDF using wkhtmltopdf
+  version: 1.0.0
+
+paths:
+  /api/v1/html-pdf/wkhtmltopdf/url:
+    post:
+      summary: Generate PDF from URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: The URL of the HTML content to convert.
+                callbackUri:
+                  type: string
+                  description: The URL to receive a callback when the conversion is complete.
+      responses:
+        '200':
+          description: PDF generated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message.
+                  pdfUrl:
+                    type: string
+                    description: The URL to download the generated PDF.
+        '400':
+          description: Bad request.
+      tags:
+        - HTML to PDF Converter
+
+  /api/v1/html-pdf/wkhtmltopdf/data:
+    post:
+      summary: Generate PDF from body data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fileData:
+                  type: string
+                  description: The HTML content to convert.
+                callbackUri:
+                  type: string
+                  description: The URL to receive a callback when the conversion is complete.
+      responses:
+        '200':
+          description: PDF generated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message.
+                  pdfUrl:
+                    type: string
+                    description: The URL to download the generated PDF.
+        '400':
+          description: Bad request.
+      tags:
+        - HTML to PDF Converter
+
+  /api/v1/html-pdf/wkhtmltopdf/file:
+    post:
+      summary: Generate PDF from file in request body
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The HTML file to convert.
+                callbackUri:
+                  type: string
+                  description: The URL to receive a callback when the conversion is complete.
+      responses:
+        '200':
+          description: PDF generated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message.
+                  pdfUrl:
+                    type: string
+                    description: The URL to download the generated PDF.
+        '400':
+          description: Bad request.
+      tags:
+        - HTML to PDF Converter
+
+tags:
+  - name: HTML to PDF Converter
+    description: API for converting HTML to PDF using wkhtmltopdf
