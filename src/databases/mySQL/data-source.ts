@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 
-import Config from '@/config/environment';
+import Config from '@/config/Environment';
 
 const sqlDataSource = new DataSource({
   type: 'mysql',

@@ -9,3 +9,6 @@ TODO
 8. eslint
 9. errors and global error handling middleware
 10. health check route
+11. kafka
+12. swagger
+13. test cases

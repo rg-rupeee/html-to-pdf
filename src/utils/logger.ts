@@ -1,6 +1,6 @@
 import winston from 'winston';
 
-import Config from '@/config/environment';
+import Config from '@/config/Environment';
 
 const levels = {
   error: 0,

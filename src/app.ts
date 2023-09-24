@@ -10,7 +10,7 @@ import http from 'http';
 import hpp from 'hpp';
 
 import logger, { stream } from '@utils/logger';
-import Config from '@config/environment';
+import Config from '@/config/Environment';
 import { connectDatabases } from './databases';
 import errorHandler from '@middlewares/error.middleware';
 import routes from '@modules/index';
