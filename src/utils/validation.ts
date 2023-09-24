@@ -1,6 +1,5 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-export * from 'class-validator';
 
 export const validationPipe = async (
   schema: new () => {},

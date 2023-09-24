@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 
-import logger from '@/utils/logger';
 import { validationPipe } from '@utils/validation';
 
 const validationMiddleware =
@@ -11,7 +10,6 @@ const validationMiddleware =
     });
 
     if (result !== true) {
-      logger.error(result);
       return res.status(400).json({
         success: false,
         validation_path: path,

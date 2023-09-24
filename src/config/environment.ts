@@ -1,5 +1,7 @@
 import logger from '@utils/logger';
-import { validationPipe, IsString } from '@utils/validation';
+import { IsString } from 'class-validator';
+
+import { validationPipe } from '@utils/validation';
 
 class Environment {
   @IsString()

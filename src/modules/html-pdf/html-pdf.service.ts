@@ -1,11 +1,10 @@
-import fs from 'fs';
+import axios from 'axios';
+import FormData from 'form-data';
 import wkhtmltopdf from 'wkhtmltopdf';
-import path from 'path';
 
 import logger from '@/utils/logger';
 
 class HtmlToPdfService {
-  private baseFilePath = path.join(__dirname, '../../../temp');
   private wkhtmltopdfConfig = {
     pageSize: 'letter',
     enableLocalFileAccess: true,
@@ -18,37 +17,79 @@ class HtmlToPdfService {
     enablePlugins: true,
   };
 
-  public createPdfFromUrl = async (url: string) => {
-    const filepath = path.join(this.baseFilePath, 'output.pdf');
-    wkhtmltopdf(url, this.wkhtmltopdfConfig, function (err, stream) {
-      if (err) {
-        logger.error(err);
-        return;
-      }
-
-      stream.pipe(fs.createWriteStream(filepath));
-    });
+  public createPdfFromUrl = async (url: string, callbackUri: string) => {
+    try {
+      wkhtmltopdf(url, this.wkhtmltopdfConfig, async (err, stream) => {
+        if (err) {
+          logger.error(err);
+          return;
+        }
+        await this.postFile('asdf', stream, callbackUri);
+      });
+    } catch (err) {
+      logger.info(err);
+    }
 
     return { success: true };
   };
 
-  public createPdf = async () => {
-    wkhtmltopdf(
-      fs.createReadStream('Google.html'),
-      {
-        pageSize: 'letter',
-        enableLocalFileAccess: true,
-        loadErrorHandling: 'ignore',
-        loadMediaErrorHandling: 'ignore',
-      },
-      function (err, stream) {
-        // do whatever with the stream
+  public createPDFFromData = async (fileData: string, callbackUri: string) => {
+    try {
+      wkhtmltopdf(fileData, this.wkhtmltopdfConfig, async (err, stream) => {
         if (err) {
-          console.log(err);
+          logger.error(err);
+          return;
         }
-        stream.pipe(fs.createWriteStream('output.pdf'));
+        await this.postFile('asdf', stream, callbackUri);
+      });
+    } catch (err) {
+      logger.info(err);
+    }
+
+    return { success: true };
+  };
+
+  public createPDFFromFile = async (file, callbackUri: string) => {
+    try {
+      wkhtmltopdf(
+        Buffer.from(file.buffer),
+        this.wkhtmltopdfConfig,
+        async (err, stream) => {
+          if (err) {
+            logger.error(err);
+            return;
+          }
+          await this.postFile('asdf', stream, callbackUri);
+        },
+      );
+    } catch (err) {
+      logger.info(err);
+    }
+
+    return { success: true };
+  };
+
+  private postFile = async (id: string, fileStream, callbackUri: string) => {
+    const data = new FormData();
+    data.append('id', id);
+    data.append('file', fileStream, { filename: 'file.pdf' });
+
+    const reqConfig = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: callbackUri,
+      headers: {
+        ...data.getHeaders(),
       },
-    );
+      data: data,
+    };
+
+    try {
+      await axios.request(reqConfig);
+    } catch (err) {
+      logger.error(err);
+    }
+
     return true;
   };
 }
