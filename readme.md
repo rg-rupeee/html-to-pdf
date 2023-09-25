@@ -113,4 +113,4 @@ curl --location '{{BASE_URL}}/api/v1/html-pdf/wkhtmltopdf/file' \
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/rg-rupeee/html-to-pdf/blob/main/LICENSE.md) file for details.
