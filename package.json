@@ -8,10 +8,12 @@
     "serve": "node dist/server.js",
     "start": "yarn build && yarn serve",
     "start:local": "yarn build && yarn serve:local",
+    "start:watch": "env-cmd -f .env.local nodemon",
     "serve:local": "env-cmd -f .env.local yarn serve",
     "format": "eslint . --fix",
     "clean-dist": "npx ts-node scripts/removeDist.ts",
-    "copy-assets": "npx ts-node scripts/copyAssets.ts"
+    "copy-assets": "npx ts-node scripts/copyAssets.ts",
+    "postinstall": "npx husky install"
   },
   "author": "Rupesh Garhwal <rupeshgarhwal3920@gmail.com>",
   "license": "ISC",
@@ -57,9 +59,17 @@
     "eslint": "^8.49.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^8.0.3",
+    "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
     "shelljs": "^0.8.5",
     "ts-node": "^10.9.1",
-    "tsc-alias": "^1.8.7"
+    "tsc-alias": "^1.8.7",
+    "tsconfig-paths": "^4.2.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
