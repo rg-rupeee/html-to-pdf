@@ -3,8 +3,12 @@ import FormData from 'form-data';
 import wkhtmltopdf from 'wkhtmltopdf';
 
 import logger from '@/utils/logger';
+import Log, { Status as LogStatus } from '@/entities/Log.entity';
+import { sqlDataSource } from '@databases/index';
 
 class HtmlToPdfService {
+  private Log = Log;
+  private logRepository = sqlDataSource.getRepository(Log);
   private wkhtmltopdfConfig = {
     pageSize: 'letter',
     enableLocalFileAccess: true,
@@ -18,19 +22,24 @@ class HtmlToPdfService {
   };
 
   public createPdfFromUrl = async (url: string, callbackUri: string) => {
+    const log = this.logRepository.create();
+    await this.logRepository.insert(log);
+
     try {
       wkhtmltopdf(url, this.wkhtmltopdfConfig, async (err, stream) => {
         if (err) {
           logger.error(err);
+          await this.Log.logError(log.id, JSON.stringify(err));
           return;
         }
-        await this.postFile('asdf', stream, callbackUri);
+        await this.postFile(log.id, stream, callbackUri);
       });
     } catch (err) {
       logger.info(err);
+      await this.Log.logError(log.id, JSON.stringify(err));
     }
 
-    return { success: true };
+    return { id: log.id };
   };
 
   public createPDFFromData = async (fileData: string, callbackUri: string) => {
@@ -69,7 +78,7 @@ class HtmlToPdfService {
     return { success: true };
   };
 
-  private postFile = async (id: string, fileStream, callbackUri: string) => {
+  private postFile = async (id: number, fileStream, callbackUri: string) => {
     const data = new FormData();
     data.append('id', id);
     data.append('file', fileStream, { filename: 'file.pdf' });
@@ -88,7 +97,11 @@ class HtmlToPdfService {
       await axios.request(reqConfig);
     } catch (err) {
       logger.error(err);
+      await this.Log.logError(id, 'Error Posting Data to Callback API');
+      return false;
     }
+
+    await this.logRepository.update({ id }, { status: LogStatus.COMPLETED });
 
     return true;
   };

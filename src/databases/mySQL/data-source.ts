@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 
 import Config from '@/config/Environment';
+import Entities from '@entities/index';
 
 const sqlDataSource = new DataSource({
   type: 'mysql',
@@ -9,7 +10,7 @@ const sqlDataSource = new DataSource({
   username: Config.envVars.MYSQL.USERNAME,
   password: Config.envVars.MYSQL.PASSWORD,
   database: Config.envVars.MYSQL.DATABASE,
-  entities: ['src/entities/*.js'],
+  entities: Entities,
   logging: true,
   synchronize: true,
 });

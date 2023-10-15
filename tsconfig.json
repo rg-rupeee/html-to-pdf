@@ -30,7 +30,9 @@
       "@utils/*": ["utils/*"],
       "@middlewares/*": ["middlewares/*"],
       "@interfaces/*": ["interfaces/*"],
-      "@modules/*": ["modules/*"]
+      "@modules/*": ["modules/*"],
+      "@entities/*": ["entities/*"],
+      "@databases/*": ["databases/*"]
     }
   },
   "include": ["src/**/*"]
