@@ -32,7 +32,8 @@
       "@interfaces/*": ["interfaces/*"],
       "@modules/*": ["modules/*"],
       "@entities/*": ["entities/*"],
-      "@databases/*": ["databases/*"]
+      "@databases/*": ["databases/*"],
+      "@common/*": ["common/*"]
     }
   },
   "include": ["src/**/*"]
