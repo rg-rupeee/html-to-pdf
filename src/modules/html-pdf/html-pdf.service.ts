@@ -5,7 +5,7 @@ import logger from '@/utils/logger';
 import Wkhtmltopdf from '@common/Wkhtmltopdf';
 import { serializeError } from '@utils/common';
 import { sqlDataSource } from '@databases/index';
-import Log, { LogStatus, LogType } from '@/entities/Log.entity';
+import Log, { LogStatus, LogType } from '@entities/Log.entity';
 
 class HtmlToPdfService {
   private Log = Log;
@@ -22,12 +22,12 @@ class HtmlToPdfService {
     return { id: log.id };
   };
 
-  public createPDFFromFile = async (file, callbackUri: string) => {
+  public createPDFFromFile = async (file: any, callbackUri: string) => {
     const log = await this.htmlToPdf(Buffer.from(file.buffer), callbackUri);
     return { id: log.id };
   };
 
-  private htmlToPdf = async (input, callbackUri: string) => {
+  private htmlToPdf = async (input: string | any, callbackUri: string) => {
     const log = this.logRepository.create({ type: LogType.URL });
     await this.logRepository.insert(log);
     try {
@@ -48,7 +48,11 @@ class HtmlToPdfService {
     return log;
   };
 
-  private postFile = async (id: number, fileStream, callbackUri: string) => {
+  private postFile = async (
+    id: number,
+    fileStream: any,
+    callbackUri: string,
+  ) => {
     const data = new FormData();
     data.append('id', id);
     data.append('file', fileStream, { filename: 'file.pdf' });
