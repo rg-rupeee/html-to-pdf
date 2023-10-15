@@ -3,8 +3,9 @@ import FormData from 'form-data';
 import wkhtmltopdf from 'wkhtmltopdf';
 
 import logger from '@/utils/logger';
-import Log, { Status as LogStatus } from '@/entities/Log.entity';
+import { serializeError } from '@utils/common';
 import { sqlDataSource } from '@databases/index';
+import Log, { LogStatus, LogType } from '@/entities/Log.entity';
 
 class HtmlToPdfService {
   private Log = Log;
@@ -22,43 +23,51 @@ class HtmlToPdfService {
   };
 
   public createPdfFromUrl = async (url: string, callbackUri: string) => {
-    const log = this.logRepository.create();
+    const log = this.logRepository.create({ type: LogType.URL });
     await this.logRepository.insert(log);
-
+    console.log(log);
     try {
       wkhtmltopdf(url, this.wkhtmltopdfConfig, async (err, stream) => {
         if (err) {
           logger.error(err);
-          await this.Log.logError(log.id, JSON.stringify(err));
+          const parsedError = serializeError(err) as { message: string };
+          await this.Log.logError(log.id, JSON.stringify(parsedError.message));
           return;
         }
         await this.postFile(log.id, stream, callbackUri);
       });
     } catch (err) {
       logger.info(err);
-      await this.Log.logError(log.id, JSON.stringify(err));
+      const parsedError = serializeError(err) as { message: string };
+      await this.Log.logError(log.id, JSON.stringify(parsedError.message));
     }
-
     return { id: log.id };
   };
 
   public createPDFFromData = async (fileData: string, callbackUri: string) => {
+    const log = this.logRepository.create({ type: LogType.DATA });
+    await this.logRepository.insert(log);
     try {
       wkhtmltopdf(fileData, this.wkhtmltopdfConfig, async (err, stream) => {
         if (err) {
           logger.error(err);
+          const parsedError = serializeError(err) as { message: string };
+          await this.Log.logError(log.id, JSON.stringify(parsedError.message));
           return;
         }
-        await this.postFile('asdf', stream, callbackUri);
+        await this.postFile(log.id, stream, callbackUri);
       });
     } catch (err) {
       logger.info(err);
+      const parsedError = serializeError(err) as { message: string };
+      await this.Log.logError(log.id, JSON.stringify(parsedError.message));
     }
-
-    return { success: true };
+    return { id: log.id };
   };
 
   public createPDFFromFile = async (file, callbackUri: string) => {
+    const log = this.logRepository.create({ type: LogType.FILE });
+    await this.logRepository.insert(log);
     try {
       wkhtmltopdf(
         Buffer.from(file.buffer),
@@ -66,16 +75,22 @@ class HtmlToPdfService {
         async (err, stream) => {
           if (err) {
             logger.error(err);
+            const parsedError = serializeError(err) as { message: string };
+            await this.Log.logError(
+              log.id,
+              JSON.stringify(parsedError.message),
+            );
             return;
           }
-          await this.postFile('asdf', stream, callbackUri);
+          await this.postFile(log.id, stream, callbackUri);
         },
       );
     } catch (err) {
       logger.info(err);
+      const parsedError = serializeError(err) as { message: string };
+      await this.Log.logError(log.id, JSON.stringify(parsedError.message));
     }
-
-    return { success: true };
+    return { id: log.id };
   };
 
   private postFile = async (id: number, fileStream, callbackUri: string) => {

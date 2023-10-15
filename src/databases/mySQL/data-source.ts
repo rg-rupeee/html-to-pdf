@@ -11,8 +11,8 @@ const sqlDataSource = new DataSource({
   password: Config.envVars.MYSQL.PASSWORD,
   database: Config.envVars.MYSQL.DATABASE,
   entities: Entities,
-  logging: true,
-  synchronize: true,
+  logging: false,
+  synchronize: false,
 });
 
 export default sqlDataSource;

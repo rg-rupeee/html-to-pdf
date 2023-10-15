@@ -7,10 +7,16 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-export enum Status {
+export enum LogStatus {
   STARTED = 'started',
   COMPLETED = 'completed',
   ERROR = 'error',
+}
+
+export enum LogType {
+  URL = 'url',
+  FILE = 'file',
+  DATA = 'data',
 }
 
 @Entity()
@@ -20,10 +26,17 @@ class Log extends BaseEntity {
 
   @Column({
     type: 'enum',
-    enum: Status,
-    default: Status.STARTED,
+    enum: LogType,
+    nullable: false,
   })
-  status: Status;
+  type: LogType;
+
+  @Column({
+    type: 'enum',
+    enum: LogStatus,
+    default: LogStatus.STARTED,
+  })
+  status: LogStatus;
 
   @Column({ nullable: true })
   error_reason: String;
@@ -35,7 +48,7 @@ class Log extends BaseEntity {
   updated_at: Date;
 
   static logError(id: number, error_reason?: string) {
-    return this.update({ id }, { status: Status.ERROR, error_reason });
+    return this.update({ id }, { status: LogStatus.ERROR, error_reason });
   }
 }
 
